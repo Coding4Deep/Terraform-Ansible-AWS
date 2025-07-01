@@ -29,3 +29,14 @@ module "vpc" {
   source         = "./Modules/VPC"
   vpc_cidr_block = var.vpc_cidr_block
 }
+
+module "SecurityGroup" {
+  source = "./Modules/SecurityGroup"
+  vpc_id = module.vpc.vpc_id
+}
+
+
+module "EC2" {
+  source   = "./Modules/EC2"
+  key_name = var.key_name
+}
