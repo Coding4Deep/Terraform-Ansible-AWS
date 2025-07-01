@@ -27,6 +27,22 @@ locals {
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
       description = "Allow HTTP access on 8080"
+    },
+
+    {
+      from_port   = 9000
+      to_port     = 9000
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow HTTP access on 9000"
+    },
+    {
+      from_port   = 8081
+      to_port     = 8081
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow HTTP access on 8081"
     }
+
   ]
 }

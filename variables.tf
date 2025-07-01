@@ -2,6 +2,8 @@ variable "aws_region" {
   type    = string
   default = "ap-south-1"
 }
+
+
 variable "vault_token" {
   type = string
 }
@@ -13,6 +15,6 @@ variable "vpc_cidr_block" {
 
 variable "key_name" {
   description = "name of the pem file"
-  type = string
-  default = "terraform_ansible"
+  type        = string
+  default     = "terraform_ansible"
 }

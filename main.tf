@@ -6,6 +6,13 @@ terraform {
     }
   }
   required_version = ">= 0.12"
+
+  backend "s3" {
+    bucket  = "terraform-ansible-project-bucket"
+    key     = "env/dev/terraform.tfstate"
+    region  = "ap-south-1"
+    encrypt = true
+  }
 }
 
 provider "vault" {
@@ -37,6 +44,14 @@ module "SecurityGroup" {
 
 
 module "EC2" {
-  source   = "./Modules/EC2"
-  key_name = var.key_name
+  source           = "./Modules/EC2"
+  key_name         = var.key_name
+  public_subnet_id = module.vpc.public_subnet_id
+  public_sg_id     = module.SecurityGroup.public_sg_id
+
+  private_subnet_id = module.vpc.private_subnet_id
+  private_sg_id     = module.SecurityGroup.private_sg_id
 }
+
+
+
