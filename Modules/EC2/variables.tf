@@ -11,20 +11,16 @@ variable "public_instances" {
     instance_type = string
   }))
   default = {
-    "jenkins" = {
-      ami           = "ami-0f918f7e67a3323f0"
-      instance_type = "t2.micro"
-    },
     "tomcat" = {
-      ami           = "ami-0f918f7e67a3323f0"
+      ami           = "ami-020cba7c55df1f615"
       instance_type = "t2.micro"
     },
     "nexus" = {
-      ami           = "ami-0f918f7e67a3323f0"
+      ami           = "ami-020cba7c55df1f615"
       instance_type = "t2.micro"
     },
     "sonarqube" = {
-      ami           = "ami-0f918f7e67a3323f0"
+      ami           = "ami-020cba7c55df1f615"
       instance_type = "t2.medium"
     }
   }
@@ -50,7 +46,7 @@ variable "private_instances" {
   description = "Map of private instance configurations"
   default = {
     "backend" = {
-      ami           = "ami-0f918f7e67a3323f0"
+      ami           = "ami-020cba7c55df1f615"
       instance_type = "t2.medium"
     }
   }

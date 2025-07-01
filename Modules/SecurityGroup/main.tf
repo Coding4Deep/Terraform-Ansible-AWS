@@ -62,4 +62,6 @@ resource "aws_security_group" "PrivateEC2SecurityGroup" {
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow all outbound traffic"
   }
+
+
 }
