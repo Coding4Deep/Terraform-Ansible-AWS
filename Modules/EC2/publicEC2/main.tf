@@ -15,6 +15,64 @@ resource "aws_instance" "public_ec2" {
 }
 
 
+# COPY PEM FILE TO THE TOMCAT EC2 ONLY 
+resource "null_resource" "copy_pem_to_tomcat" {
+  depends_on = [aws_instance.public_ec2]
+
+  triggers = {
+    tomcat_instance_id = aws_instance.public_ec2["tomcat"].id
+  }
+
+  connection {
+    host        = aws_instance.public_ec2["tomcat"].public_ip
+    user        = "ubuntu"
+
+    
+    type        = "ssh"
+    private_key = file("${pathexpand("~")}/${var.key_name}.pem")
+  }
+
+  provisioner "file" {
+    source      = "${pathexpand("~")}/${var.key_name}.pem"
+    destination = "/home/ubuntu/${var.key_name}.pem"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod 400 /home/ubuntu/${var.key_name}.pem",
+      "chown ubuntu:ubuntu /home/ubuntu/${var.key_name}.pem"
+    ]
+  }
+}
 
 
 
+
+# COPY PEM FILE TO THE ALL EC2 INSTANCES
+
+# resource "null_resource" "copy_pem_to_all" {
+#   for_each = aws_instance.public_ec2
+
+#   triggers = {
+#     instance_id = each.value.id
+#   }
+
+#   connection {
+#     host        = each.value.public_ip
+#     user        = "ubuntu"
+#     type        = "ssh"
+#     private_key = file("${pathexpand("~")}/${var.key_name}.pem")
+#   }
+
+#   provisioner "file" {
+#     source      = "${pathexpand("~")}/${var.key_name}.pem"
+#     destination = "/home/ubuntu/${var.key_name}.pem"
+#   }
+
+#   provisioner "remote-exec" {
+#     inline = [
+#       "chmod 400 /home/ubuntu/${var.key_name}.pem",
+#       "chown ubuntu:ubuntu /home/ubuntu/${var.key_name}.pem"
+#     ]
+#   }
+# }

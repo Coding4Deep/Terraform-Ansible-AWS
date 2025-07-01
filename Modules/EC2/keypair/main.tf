@@ -13,3 +13,4 @@ resource "local_file" "private_key_pem" {
   filename        = "${pathexpand("~")}/${var.key_name}.pem"
   file_permission = "0400"
 }
+
