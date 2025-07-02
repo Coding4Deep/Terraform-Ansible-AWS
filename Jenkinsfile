@@ -6,7 +6,7 @@ pipeline{
     }
     
     stages{
-        stage('checkout'){
+        stage('checkout src code'){
             steps{
                 git branch: 'terraform', url: 'https://github.com/Coding4Deep/Terraform-Ansible-AWS.git'
             }
