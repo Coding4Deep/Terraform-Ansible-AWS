@@ -1,0 +1,22 @@
+# inventory/aws_ec2.yaml
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+
+filters:
+  tag:project: terraform
+
+keyed_groups:
+  - key: tags.Role
+    prefix: ""
+    separator: ""
+
+compose:
+  ansible_host: >-
+    (tags.Role in ['tomcat', 'nexus', 'sonarqube']) | ternary(public_ip_address, private_ip_address)
+  
+  ansible_ssh_common_args: >-
+    (tags.Role == 'backend') | ternary(
+      "-o ProxyCommand='ssh -o StrictHostKeyChecking=no -i ~/terraform_ansible.pem -W %h:%p ubuntu@{{ hostvars[(groups['tomcat'] | list)[0]].ansible_host }}'",
+      ""
+    )
