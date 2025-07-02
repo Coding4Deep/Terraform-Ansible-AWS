@@ -10,6 +10,7 @@ resource "aws_instance" "private_ec2" {
   tags = {
     Name = each.key
     Role = each.key
+    project = "terraform"
   }
 }
 

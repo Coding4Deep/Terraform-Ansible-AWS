@@ -9,8 +9,9 @@ resource "aws_instance" "public_ec2" {
   associate_public_ip_address = true
 
   tags = {
-    Name = each.key
-    Role = each.key
+    Name    = each.key
+    Role    = each.key
+    project = "terraform"
   }
 }
 
