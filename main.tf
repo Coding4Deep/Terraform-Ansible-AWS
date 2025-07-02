@@ -16,21 +16,23 @@ terraform {
 }
 
 provider "vault" {
-  address         = "http://127.0.0.1:8200"
+  address         = "http://23.21.59.253:8200"
   token           = var.vault_token
   skip_tls_verify = true
 }
 
-data "vault_kv_secret_v2" "awscreds" {
-  mount = "secret"
-  name  = "aws"
+
+data "vault_generic_secret" "aws_creds" {
+  path = "aws-creds/myapp"
 }
 
 provider "aws" {
-  access_key = data.vault_kv_secret_v2.awscreds.data["access_key"]
-  secret_key = data.vault_kv_secret_v2.awscreds.data["secret_key"]
+  access_key = data.vault_generic_secret.aws_creds.data["access_key"]
+  secret_key = data.vault_generic_secret.aws_creds.data["secret_key"]
   region     = var.aws_region
-}
+}   
+
+
 
 module "vpc" {
   source         = "./Modules/VPC"
