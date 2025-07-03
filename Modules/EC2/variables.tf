@@ -11,18 +11,9 @@ variable "public_instances" {
     instance_type = string
   }))
   default = {
-    "tomcat" = {
-      ami           = "ami-020cba7c55df1f615"
-      instance_type = "t2.micro"
-    },
-    "nexus" = {
-      ami           = "ami-020cba7c55df1f615"
-      instance_type = "t2.micro"
-    },
-    "sonarqube" = {
+    "frontend" = {
       ami           = "ami-020cba7c55df1f615"
       instance_type = "t2.medium"
-    }
   }
 }
 
