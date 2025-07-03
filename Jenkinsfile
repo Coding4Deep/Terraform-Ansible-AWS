@@ -29,7 +29,7 @@ pipeline{
                     -var="vault_token=$VAULT_TOKEN" \
                     -var="vault_addr=$VAULT_ADDR"
 
-                  terraform apply --auto-approve \
+                  terraform destroy --auto-approve \
                     -var="vault_token=$VAULT_TOKEN" \
                     -var="vault_addr=$VAULT_ADDR"
                 '''
