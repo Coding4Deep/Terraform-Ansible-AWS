@@ -1,0 +1,6 @@
+- name: Test vault v2 access
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - debug:
+        msg: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=tomcat/data/creds field=username kv_version=2 auth_method=token token=' + lookup('env','VAULT_TOKEN') + ' url=' + lookup('env','VAULT_ADDR')) }}"
