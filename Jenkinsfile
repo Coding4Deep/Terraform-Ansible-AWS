@@ -41,8 +41,7 @@ pipeline {
 
                         export VAULT_ADDR=$VAULT_ADDR
                         export VAULT_TOKEN=$VAULT_TOKEN
-
-                        
+                                                
                         ansible-playbook playbooks/frontend.yml 
                     '''
                 }      

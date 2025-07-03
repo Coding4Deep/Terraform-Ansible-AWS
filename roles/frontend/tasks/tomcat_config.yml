@@ -1,3 +1,17 @@
+- name: Fetch Vault secrets as facts
+  set_fact:
+    tomcat_creds: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=tomcat/data/creds kv_version=2 }}"
+
+- name: Set tomcat_username and tomcat_password
+  set_fact:
+    tomcat_username: "{{ tomcat_creds.username }}"
+    tomcat_password: "{{ tomcat_creds.password }}"
+
+- name: Debug tomcat credentials
+  debug:
+    msg: "Username: {{ tomcat_username }}, Password: {{ tomcat_password }}"
+
+
 
 - name: Copy tomcat-users.xml with credentials from Vault
   template:
