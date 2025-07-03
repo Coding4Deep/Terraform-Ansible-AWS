@@ -39,7 +39,7 @@ pipeline {
                         export AWS_ACCESS_KEY_ID=$(vault kv get -field=access_key aws-creds/myapp)
                         export AWS_SECRET_ACCESS_KEY=$(vault kv get -field=secret_key aws-creds/myapp)
                         
-                        ansible-playbbok frontend.yml
+                        ansible-playbook playbooks/frontend.yml
                     '''
                 }      
             }
