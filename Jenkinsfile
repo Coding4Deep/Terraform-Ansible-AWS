@@ -23,6 +23,12 @@ pipeline{
                 string(credentialsId: 'vault_addr', variable: 'VAULT_ADDR')
               ]) {
                 sh '''
+                  export VAULT_ADDR=$VAULT_ADDR
+                  export VAULT_TOKEN=$VAULT_TOKEN
+          
+                  export AWS_ACCESS_KEY_ID=$(vault kv get -field=access_key aws-creds/myapp)
+                  export AWS_SECRET_ACCESS_KEY=$(vault kv get -field=secret_key aws-creds/myapp)
+          
                   terraform init
 
                   terraform plan \
