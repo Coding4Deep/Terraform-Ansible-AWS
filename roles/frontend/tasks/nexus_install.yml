@@ -1,0 +1,70 @@
+- name: Create nexus user
+  user:
+    name: nexus
+    shell: /bin/bash
+    home: /opt/nexus
+    create_home: yes
+
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - openjdk-17-jdk
+    - wget
+    - tar
+
+- name: Download Nexus
+  get_url:
+    url: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+    dest: /tmp/nexus.tar.gz
+
+- name: Extract Nexus
+  unarchive:
+    src: /tmp/nexus.tar.gz
+    dest: /opt
+    remote_src: yes
+
+- name: Rename Nexus directory
+  command: mv /opt/nexus-3* /opt/nexus
+  args:
+    creates: /opt/nexus/bin/nexus
+
+- name: Change ownership
+  file:
+    path: /opt/nexus
+    owner: nexus
+    group: nexus
+    recurse: yes
+
+- name: Set Nexus run user
+  lineinfile:
+    path: /opt/nexus/bin/nexus.rc
+    line: 'run_as_user="nexus"'
+
+- name: Create systemd service for Nexus
+  copy:
+    dest: /etc/systemd/system/nexus.service
+    content: |
+      [Unit]
+      Description=nexus service
+      After=network.target
+
+      [Service]
+      Type=forking
+      LimitNOFILE=65536
+      ExecStart=/opt/nexus/bin/nexus start
+      ExecStop=/opt/nexus/bin/nexus stop
+      User=nexus
+      Restart=on-abort
+
+      [Install]
+      WantedBy=multi-user.target
+  notify: Reload systemd
+
+- name: Enable and start Nexus
+  systemd:
+    name: nexus
+    enabled: yes
+    state: started
