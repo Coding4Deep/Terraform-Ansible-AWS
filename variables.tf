@@ -5,7 +5,13 @@ variable "aws_region" {
 
 variable "vault_token" {
   type = string
+  sensitive   = true
 }
+
+variable "vault_addr" {
+  type = string
+}
+
 
 variable "vpc_cidr_block" {
   type    = string
