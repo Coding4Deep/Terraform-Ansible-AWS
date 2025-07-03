@@ -3,13 +3,17 @@ pipeline {
     
     stages{
         stage('checkout'){
-            git branch: ansible , url: 'https://github.com/Coding4Deep/Terraform-Ansible-AWS.git'
+            steps{
+                git branch: ansible , url: 'https://github.com/Coding4Deep/Terraform-Ansible-AWS.git'
+            }
         }
           
         stage('ansible test'){
-            sh '''
-               ansible-inventory --graph
-            '''
+            steps{
+                sh '''
+                   ansible-inventory --graph
+                '''
+            }
         }
     }
 }
