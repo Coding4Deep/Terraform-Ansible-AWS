@@ -1,3 +1,9 @@
-#SPDX-License-Identifier: MIT-0
----
-# handlers file for frontend
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Start Tomcat
+  systemd:
+    name: tomcat
+    state: started
+    enabled: yes
