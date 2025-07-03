@@ -13,7 +13,7 @@ variable "public_instances" {
   default = {
     "frontend" = {
       ami           = "ami-020cba7c55df1f615"
-      instance_type = "t2.medium"
+      instance_type = "t2.large"
     }
   }
 }
@@ -39,7 +39,7 @@ variable "private_instances" {
   default = {
     "backend" = {
       ami           = "ami-020cba7c55df1f615"
-      instance_type = "t2.medium"
+      instance_type = "t2.large"
     }
   }
 }
