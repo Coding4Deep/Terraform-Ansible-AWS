@@ -24,10 +24,14 @@ pipeline{
               ]) {
                 sh '''
                   terraform init
+                  
                   terraform plan \
                     -var="vault_token=$VAULT_TOKEN" \
                     -var="vault_addr=$VAULT_ADDR"
-                  terraform apply --auto-approve
+
+                  terraform apply --auto-approve 
+                    -var="vault_token=$VAULT_TOKEN" \
+                    -var="vault_addr=$VAULT_ADDR"
                 '''
                 }
             }
