@@ -1,3 +1,2 @@
----
-tomcat_username: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=tomcat/data/creds field=username kv_version=2') }}"
-tomcat_password: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=tomcat/data/creds field=password kv_version=2') }}"
+tomcat_username: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=tomcat/data/creds field=username kv_version=2 auth_method=token token=' + lookup('env','VAULT_TOKEN') + ' url=' + lookup('env','VAULT_ADDR')) }}"
+tomcat_password: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=tomcat/data/creds field=password kv_version=2 auth_method=token token=' + lookup('env','VAULT_TOKEN') + ' url=' + lookup('env','VAULT_ADDR')) }}"
