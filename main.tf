@@ -16,7 +16,7 @@ terraform {
 }
 
 provider "vault" {
-  address         = "http://23.21.59.253:8200"
+  address         = "http://3.83.239.200:8200"
   token           = var.vault_token
   skip_tls_verify = true
 }
