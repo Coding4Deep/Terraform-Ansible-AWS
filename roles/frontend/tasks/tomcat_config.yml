@@ -1,6 +1,6 @@
 - name: Fetch Vault secrets as facts
   set_fact:
-    tomcat_creds: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=tomcat/data/creds kv_version=2 }}"
+    tomcat_creds: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=tomcat/data/creds kv_version=2 auth_method=token token=' + lookup('env','VAULT_TOKEN') + ' url=' + lookup('env','VAULT_ADDR')) }}"
 
 - name: Set tomcat_username and tomcat_password
   set_fact:
