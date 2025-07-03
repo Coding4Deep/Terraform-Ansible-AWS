@@ -23,6 +23,7 @@ pipeline {
                       export AWS_SECRET_ACCESS_KEY=$(vault kv get -field=secret_key aws-creds/myapp)
                   
                       ansible-inventory  --graph
+                      ansible all -m ping 
                     '''
                 }              
             }
