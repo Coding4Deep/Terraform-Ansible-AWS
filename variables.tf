@@ -1,6 +1,6 @@
 variable "aws_region" {
   type    = string
-  default = "ap-south-1"
+  default = "us-east-1"
 }
 
 variable "vault_token" {
@@ -23,3 +23,6 @@ variable "key_name" {
   type        = string
   default     = "terraform_ansible"
 }
+
+
+
