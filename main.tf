@@ -33,7 +33,6 @@ provider "aws" {
 }   
 
 
-
 module "vpc" {
   source         = "./Modules/VPC"
   vpc_cidr_block = var.vpc_cidr_block

@@ -25,25 +25,8 @@ pipeline {
             export AWS_SECRET_ACCESS_KEY=$(vault kv get -field=secret_key aws-creds/myapp)
 
             terraform init
-          '''
-        }
-      }
-    }
-
-    stage('Terraform Plan & Apply') {
-      steps {
-        withCredentials([
-          string(credentialsId: 'vault_token', variable: 'VAULT_TOKEN'),
-          string(credentialsId: 'vault_addr', variable: 'VAULT_ADDR')
-        ]) {
-          sh '''
-            terraform plan \
-              -var="vault_token=$VAULT_TOKEN" \
-              -var="vault_addr=$VAULT_ADDR"
-
-            terraform apply --auto-approve \
-              -var="vault_token=$VAULT_TOKEN" \
-              -var="vault_addr=$VAULT_ADDR"
+            terraform plan 
+            terraform apply --auto-approve
           '''
         }
       }
