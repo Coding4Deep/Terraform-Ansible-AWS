@@ -2,7 +2,7 @@ pipeline {
     agent { label 'terraform' }
     
     stages{
-        stage('checkout'){
+        stage('checkout git'){
             steps{
                 git branch: ansible , url: 'https://github.com/Coding4Deep/Terraform-Ansible-AWS.git'
             }
