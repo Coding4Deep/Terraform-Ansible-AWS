@@ -43,7 +43,7 @@ pipeline {
                         export VAULT_TOKEN=$VAULT_TOKEN
 
                         
-                        ansible-playbook playbooks/frontend.yml
+                        ansible-playbook playbooks/frontend.yml -vvv
                     '''
                 }      
             }
