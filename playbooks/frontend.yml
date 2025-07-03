@@ -1,0 +1,6 @@
+- name: Install Tomcat,Nexus,SonarQube on public (frontend) EC2
+  hosts: frontend
+  become: true
+  roles:
+    - frontend
+     

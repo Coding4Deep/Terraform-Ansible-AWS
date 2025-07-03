@@ -1,0 +1,6 @@
+- name: Setup all servers
+  hosts: all
+  become: true
+  roles:
+    - frontend
+    - backend
