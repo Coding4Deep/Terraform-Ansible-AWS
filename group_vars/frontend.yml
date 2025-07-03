@@ -1,0 +1,3 @@
+
+tomcat_username: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=creds field=username engine_mount=tomcat') }}"
+tomcat_password: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=creds field=password engine_mount=tomcat') }}"

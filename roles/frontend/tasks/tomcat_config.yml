@@ -1,0 +1,20 @@
+
+- name: Copy tomcat-users.xml with credentials from Vault
+  template:
+    src: tomcat-users.xml.j2
+    dest: "{{ tomcat_install_dir }}/conf/tomcat-users.xml"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    mode: '0644'
+
+- name: Allow remote access to manager app
+  replace:
+    path: "{{ tomcat_install_dir }}/webapps/manager/META-INF/context.xml"
+    regexp: '<Valve className="org.apache.catalina.valves.RemoteAddrValve"[^>]+/>'
+    replace: '<!-- RemoteAddrValve removed by Ansible for remote access -->'
+
+- name: Allow remote access to host-manager app
+  replace:
+    path: "{{ tomcat_install_dir }}/webapps/host-manager/META-INF/context.xml"
+    regexp: '<Valve className="org.apache.catalina.valves.RemoteAddrValve"[^>]+/>'
+    replace: '<!-- RemoteAddrValve removed by Ansible for remote access -->'

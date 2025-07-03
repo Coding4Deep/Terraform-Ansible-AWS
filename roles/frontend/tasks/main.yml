@@ -1,2 +1,7 @@
 - name: tomcat installing 
-  import_tasks: tomcat.yml
+  import_tasks: tomcat_install.yml
+
+- name: configuring tomcat user, host-manager and manager 
+  import_tasks: tomcat_config.yml
+
+
