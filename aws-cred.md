@@ -1,11 +1,5 @@
 
 
-## Objective:
-
-Use **AWS Access Key ID** and **Secret Access Key** stored as Jenkins credentials in your Jenkins pipeline securely.
-
----
-
 ## Step 1: Add AWS Credentials in Jenkins
 
 1. Go to **Jenkins Dashboard** → **Manage Jenkins** → **Credentials** → **(global)** → **Add Credentials**
@@ -30,12 +24,6 @@ Use **AWS Access Key ID** and **Secret Access Key** stored as Jenkins credential
 Here’s how your `Jenkinsfile` should look:
 
 ```groovy
-pipeline {
-  agent any
-
-  environment {
-    AWS_REGION = 'us-east-1'
-  }
 
   stages {
     stage('Terraform Init with AWS Credentials') {
@@ -53,7 +41,7 @@ pipeline {
       }
     }
   }
-}
+ 
 ```
 
 ---
