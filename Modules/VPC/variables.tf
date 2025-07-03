@@ -3,7 +3,7 @@ variable "vpc_cidr_block" {
 }
 variable "public_subent_az" {
   type    = string
-  default = "us-east-1a"
+  default = "ap-south-1a"
 }
 variable "public_subnet_cidr" {
   type    = string
@@ -12,7 +12,7 @@ variable "public_subnet_cidr" {
 
 variable "private_subnet_az" {
   type    = string
-  default = "us-east-1a"
+  default = "ap-south-1a"
 }
 variable "private_subnet_cidr" {
   type    = string
