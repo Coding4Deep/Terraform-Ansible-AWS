@@ -32,19 +32,21 @@ pipeline {
                sh 'mvn -DskipTests=true clean package'
             }
         }        
-        // stage('Deploy to Nexus') {
-        //     steps {
-        //         sh 'mvn  -X clean deploy'
-        //     }    
-        // }
+        stage('Deploy to Nexus') {
+            steps {
+                sh 'mvn  -X clean deploy'
+            }    
+        }
         stage('Deploy to frontend-ec2') {
             steps {
                 sshagent(['tomcat_ec2_ssh_key']) {   
                     sh '''               
-                        scp -o StrictHostKeyChecking=no target/springboot.war ubuntu@54.152.12.195:/home/ubuntu/
-                        ssh ubuntu@54.152.12.195 'sudo rm -rf /opt/tomcat/webapps/*'
-                        ssh ubuntu@54.152.12.195 'sudo mv /home/ubuntu/springboot.war /opt/tomcat/webapps/ROOT.war'
-                        ssh ubuntu@54.152.12.195 'sudo systemctl restart tomcat'
+                        ssh ubuntu@54.152.12.195 "sudo systemctl stop tomcat"
+                        ssh ubuntu@54.152.12.195 "sudo ls -l /opt/tomcat/webapps/"
+                        ssh ubuntu@54.152.12.195 "sudo rm -rf /opt/tomcat/webapps/*"
+                        ssh ubuntu@54.152.12.195 "sudo mv /home/ubuntu/springboot.war /opt/tomcat/webapps/ROOT.war"
+                        ssh ubuntu@54.152.12.195 "sudo systemctl start tomcat"
+                       
                     '''
                 }
             }
