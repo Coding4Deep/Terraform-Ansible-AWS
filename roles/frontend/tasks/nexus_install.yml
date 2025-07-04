@@ -1,88 +1,90 @@
 ---
-- name: Install required packages for extracting archives
+- name: Install and configure Nexus Repository Manager
+  hosts: all
   become: true
-  apt:
-    name:
-      - tar
-      - gzip
-      - bzip2
-      - xz-utils
-      - unzip
-    state: present
-    update_cache: yes
+  tasks:
 
-- name: Create nexus user
-  user:
-    name: nexus
-    shell: /bin/bash
-    home: /opt/nexus
-    system: yes
-  become: true
+    - name: Install required packages for extracting archives
+      apt:
+        name:
+          - tar
+          - gzip
+          - bzip2
+          - xz-utils
+          - unzip
+        state: present
+        update_cache: yes
 
-- name: Download Nexus
-  get_url:
-    url: https://download.sonatype.com/nexus/3/nexus-3.81.1-01-linux-x86_64.tar.gz
-    dest: /tmp/nexus.tar.gz
-    mode: '0644'
-  become: true
+    - name: Create nexus user
+      user:
+        name: nexus
+        shell: /bin/bash
+        home: /opt/nexus
+        system: yes
 
-- name: Extract Nexus
-  unarchive:
-    src: /tmp/nexus.tar.gz
-    dest: /opt
-    remote_src: yes
-  become: true
+    - name: Download Nexus
+      get_url:
+        url: https://download.sonatype.com/nexus/3/nexus-3.81.1-01-linux-x86_64.tar.gz
+        dest: /tmp/nexus.tar.gz
+        mode: '0644'
+        force: true
 
-- name: Create symlink for nexus
-  file:
-    src: /opt/nexus-3.69.0-04
-    dest: /opt/nexus
-    state: link
-  become: true
+    - name: Extract Nexus
+      unarchive:
+        src: /tmp/nexus.tar.gz
+        dest: /opt
+        remote_src: yes
 
-- name: Change ownership of Nexus directories
-  file:
-    path: /opt/nexus-3.69.0-04
-    owner: nexus
-    group: nexus
-    state: directory
-    recurse: yes
-  become: true
+    - name: Create symlink for nexus
+      file:
+        src: /opt/nexus-3.81.1-01
+        dest: /opt/nexus
+        state: link
 
-- name: Set run_as_user to nexus in nexus.rc
-  lineinfile:
-    path: /opt/nexus/bin/nexus.rc
-    line: 'run_as_user="nexus"'
-    create: yes
-  become: true
+    - name: Change ownership of Nexus directories
+      file:
+        path: /opt/nexus-3.81.1-01
+        owner: nexus
+        group: nexus
+        state: directory
+        recurse: yes
 
-- name: Create systemd service for Nexus
-  copy:
-    dest: /etc/systemd/system/nexus.service
-    content: |
-      [Unit]
-      Description=nexus service
-      After=network.target
+    - name: Ensure nexus script is executable
+      file:
+        path: /opt/nexus/bin/nexus
+        mode: '0755'
+        state: file
 
-      [Service]
-      Type=forking
-      LimitNOFILE=65536
-      ExecStart=/opt/nexus/bin/nexus start
-      ExecStop=/opt/nexus/bin/nexus stop
-      User=nexus
-      Restart=on-abort
+    - name: Set run_as_user to nexus in nexus.rc
+      lineinfile:
+        path: /opt/nexus/bin/nexus.rc
+        line: 'run_as_user="nexus"'
+        create: yes
 
-      [Install]
-      WantedBy=multi-user.target
-  become: true
+    - name: Create systemd service for Nexus
+      copy:
+        dest: /etc/systemd/system/nexus.service
+        content: |
+          [Unit]
+          Description=nexus service
+          After=network.target
 
-- name: Reload systemd
-  command: systemctl daemon-reexec
-  become: true
+          [Service]
+          Type=forking
+          LimitNOFILE=65536
+          ExecStart=/opt/nexus/bin/nexus start
+          ExecStop=/opt/nexus/bin/nexus stop
+          User=nexus
+          Restart=on-abort
 
-- name: Enable and start Nexus service
-  systemd:
-    name: nexus
-    enabled: yes
-    state: started
-  become: true
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Reload systemd
+      command: systemctl daemon-reexec
+
+    - name: Enable and start Nexus service
+      systemd:
+        name: nexus
+        enabled: yes
+        state: started
