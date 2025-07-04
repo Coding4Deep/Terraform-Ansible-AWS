@@ -75,7 +75,8 @@
 
       [Install]
       WantedBy=multi-user.target
-
+    force: yes
+    
   notify:
     - Reload systemd
     - Start Tomcat
