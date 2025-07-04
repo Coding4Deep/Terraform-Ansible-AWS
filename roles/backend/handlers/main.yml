@@ -7,3 +7,9 @@
   ansible.builtin.systemd:
     name: memcached
     state: restarted
+
+
+- name: Restart rabbitmq
+  systemd:
+    name: rabbitmq-server
+    state: restarted

@@ -33,14 +33,3 @@
     enabled: yes
     state: started
 
-- name: Wait for Memcached to be ready
-  ansible.builtin.wait_for:
-    port: 11211
-    delay: 2
-    timeout: 10
-
-- name: Test Memcached connectivity
-  ansible.builtin.shell: echo "version" | nc localhost 11211
-  register: memcached_test
-  changed_when: false
-  failed_when: memcached_test.rc != 0

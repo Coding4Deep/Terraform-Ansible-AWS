@@ -5,3 +5,7 @@
 - name: Install Memcached
   import_tasks: memcached_install.yml
   tags: memcached
+
+- name: Install RabbitMQ
+  import_tasks: rabbitmq_install.yml
+  tags: rabbitmq

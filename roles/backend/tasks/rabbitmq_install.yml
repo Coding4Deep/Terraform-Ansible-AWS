@@ -1,0 +1,124 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+  tags: rabbitmq
+
+- name: Install Erlang and dependencies from Ubuntu repositories
+  apt:
+    name:
+      - erlang-base
+      - erlang-crypto
+      - erlang-eldap
+      - erlang-inets
+      - erlang-mnesia
+      - erlang-os-mon
+      - erlang-parsetools
+      - erlang-public-key
+      - erlang-runtime-tools
+      - erlang-ssl
+      - erlang-syntax-tools
+      - erlang-tools
+      - erlang-xmerl
+    state: present
+  become: yes
+  tags: rabbitmq
+
+- name: Check if RabbitMQ package already exists
+  stat:
+    path: /tmp/rabbitmq-server.deb
+  register: rabbitmq_package
+  tags: rabbitmq
+
+- name: Download RabbitMQ .deb package compatible with Erlang 25
+  get_url:
+    url: https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.14/rabbitmq-server_3.12.14-1_all.deb
+    dest: /tmp/rabbitmq-server.deb
+    mode: '0644'
+  become: yes
+  when: not rabbitmq_package.stat.exists
+  tags: rabbitmq
+
+- name: Install RabbitMQ from .deb package
+  apt:
+    deb: /tmp/rabbitmq-server.deb
+    state: present
+  become: yes
+  tags: rabbitmq
+
+- name: Start and enable RabbitMQ service
+  systemd:
+    name: rabbitmq-server
+    state: started
+    enabled: yes
+  become: yes
+  tags: rabbitmq
+
+- name: Enable RabbitMQ management plugin
+  rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled
+  become: yes
+  notify: Restart rabbitmq
+  tags: rabbitmq
+
+- name: Wait for RabbitMQ to be ready
+  wait_for:
+    port: 5672
+    host: localhost
+    delay: 10
+    timeout: 60
+  tags: rabbitmq
+
+- name: Verify RabbitMQ installation
+  command: rabbitmqctl status
+  become: yes
+  register: rabbitmq_status
+  changed_when: false
+  tags: rabbitmq
+
+- name: Display RabbitMQ status
+  debug:
+    var: rabbitmq_status.stdout_lines
+  tags: rabbitmq
+
+- name: Clean up downloaded package
+  file:
+    path: /tmp/rabbitmq-server.deb
+    state: absent
+  become: yes
+  tags: rabbitmq
+
+
+
+
+- name: Create RabbitMQ application user
+  command: rabbitmqctl add_user rabbitmq rabbitmq
+  become: yes
+  args:
+    creates: "/var/lib/rabbitmq/.rabbitmq_user_created"
+  register: add_user_result
+  changed_when: "'already exists' not in add_user_result.stdout"
+  tags: rabbitmq
+
+- name: Grant full permissions to the application user
+  command: rabbitmqctl set_permissions -p / rabbitmq ".*" ".*" ".*"
+  become: yes
+  when: add_user_result is changed
+  tags: rabbitmq
+
+- name: Set user tags (administrator access for management UI)
+  command: rabbitmqctl set_user_tags rabbitmq administrator
+  become: yes
+  when: add_user_result is changed
+  tags: rabbitmq
+
+- name: Mark that RabbitMQ user was created
+  file:
+    path: /var/lib/rabbitmq/.rabbitmq_user_created
+    state: touch
+  become: yes
+  when: add_user_result is changed
+  tags: rabbitmq
