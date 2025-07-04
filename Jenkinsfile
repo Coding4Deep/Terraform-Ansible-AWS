@@ -34,7 +34,7 @@ pipeline {
         }        
         stage('Deploy to Nexus') {
             steps {
-                sh 'mvn deploy'
+                sh 'mvn  -X clean deploy'
             }    
         }
         stage('Deploy to frontend-ec2') {
