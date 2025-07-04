@@ -1,3 +1,7 @@
 - name: Install MongoDB
   import_tasks: mongo_install.yml
   tags: mongo
+
+- name: Install Memcached
+  import_tasks: memcached_install.yml
+  tags: memcached

@@ -1,0 +1,19 @@
+- name: Install Memcached package
+  ansible.builtin.apt:
+    name: memcached
+    state: present
+    update_cache: yes
+
+- name: Ensure Memcached is enabled and running
+  ansible.builtin.systemd:
+    name: memcached
+    enabled: yes
+    state: started
+
+- name: Configure Memcached to listen on all interfaces (0.0.0.0)
+  ansible.builtin.lineinfile:
+    path: /etc/memcached.conf
+    regexp: '^-l '
+    line: '-l 0.0.0.0'
+    state: present
+  notify: Restart Memcached

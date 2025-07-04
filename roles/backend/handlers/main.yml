@@ -2,3 +2,8 @@
   ansible.builtin.systemd:
     name: mongod
     state: restarted
+
+- name: Restart Memcached
+  ansible.builtin.systemd:
+    name: memcached
+    state: restarted
