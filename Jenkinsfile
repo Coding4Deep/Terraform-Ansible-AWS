@@ -41,8 +41,9 @@ pipeline {
             steps {
                 sshagent(['tomcat_ec2_ssh_key']) {   
                     sh '''               
-                        scp -o StrictHostKeyChecking=no target/*.war ubuntu@54.152.12.195:/opt/tomcat/webapps/
-                        ssh -o StrictHostKeyChecking=no ubuntu@54.152.12.195 'sudo systemctl restart tomcat'
+                        scp -o StrictHostKeyChecking=no target/springboot.war ubuntu@54.152.12.195:/home/ubuntu/
+                        ssh ubuntu@54.152.12.195 'sudo mv /home/ubuntu/springboot.war /opt/tomcat/webapps/'
+                        ssh ubuntu@54.152.12.195 'sudo systemctl restart tomcat'
                     '''
                 }
             }
