@@ -24,6 +24,9 @@ public class ApplicationMonitoringService {
     @Autowired
     private MemcachedClient memcachedClient;
 
+    @Autowired
+    private CacheService cacheService;
+
     public Map<String, Object> getApplicationHealth() {
         Map<String, Object> health = new HashMap<>();
         
@@ -113,13 +116,17 @@ public class ApplicationMonitoringService {
         Map<String, Object> cacheStatus = new HashMap<>();
         
         try {
-            // Test Memcached connection
-            memcachedClient.set("health_check", 60, "test");
-            String result = memcachedClient.get("health_check");
+            // Use CacheService for health check
+            boolean isHealthy = cacheService.isHealthy();
             
             cacheStatus.put("type", "Memcached");
-            cacheStatus.put("status", "UP");
-            cacheStatus.put("testResult", result != null ? "SUCCESS" : "FAILED");
+            cacheStatus.put("status", isHealthy ? "UP" : "DOWN");
+            cacheStatus.put("testResult", isHealthy ? "SUCCESS" : "FAILED");
+            
+            // Additional direct test for monitoring
+            memcachedClient.set("health_check", 60, "test");
+            String result = memcachedClient.get("health_check");
+            cacheStatus.put("directTest", result != null ? "SUCCESS" : "FAILED");
             
         } catch (Exception e) {
             cacheStatus.put("status", "DOWN");
@@ -236,18 +243,25 @@ public class ApplicationMonitoringService {
         Map<String, Object> memcachedDetails = new HashMap<>();
         
         try {
-            // Test cache operations
+            // Use CacheService for comprehensive health check
+            boolean isHealthy = cacheService.isHealthy();
+            
+            memcachedDetails.put("status", isHealthy ? "UP" : "DOWN");
+            memcachedDetails.put("healthCheck", isHealthy ? "PASSED" : "FAILED");
+            
+            // Additional detailed test operations
             String testKey = "admin_health_check_" + System.currentTimeMillis();
             memcachedClient.set(testKey, 60, "test_value");
             String retrieved = memcachedClient.get(testKey);
             memcachedClient.delete(testKey);
             
-            memcachedDetails.put("status", "UP");
             memcachedDetails.put("testOperation", retrieved != null ? "SUCCESS" : "FAILED");
+            memcachedDetails.put("cacheServiceIntegration", "ENABLED");
             
         } catch (Exception e) {
             memcachedDetails.put("status", "DOWN");
             memcachedDetails.put("error", e.getMessage());
+            memcachedDetails.put("cacheServiceIntegration", "FAILED");
         }
         
         return memcachedDetails;
