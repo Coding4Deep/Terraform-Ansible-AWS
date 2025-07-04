@@ -1,10 +1,15 @@
 ---
-- name: Ensure Java is installed
-  apt:
-    name: openjdk-11-jdk
-    state: present
+- name: Install required packages for extracting archives
   become: true
-  when: ansible_os_family == "Debian"
+  apt:
+    name:
+      - tar
+      - gzip
+      - bzip2
+      - xz-utils
+      - unzip
+    state: present
+    update_cache: yes
 
 - name: Create nexus user
   user:
