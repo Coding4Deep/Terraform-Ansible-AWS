@@ -7,3 +7,6 @@
 - name: installing nexus
   import_tasks: nexus_install.yml
 
+
+- name: installing sonar
+  import_tasks: sonar_install.yml
