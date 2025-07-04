@@ -11,15 +11,20 @@
     state: started
 
 
-- name: Ensure only one listen directive (-l) and set it to 0.0.0.0
+- name: Remove all other -l directives
   ansible.builtin.lineinfile:
     path: /etc/memcached.conf
     regexp: '^-l\s+'
-    line: '-l 0.0.0.0'
-    state: present
+    state: absent
     backup: yes
-  notify: Restart Memcached
 
+- name: Add desired -l directive
+  ansible.builtin.lineinfile:
+    path: /etc/memcached.conf
+    line: '-l 0.0.0.0'
+    create: yes
+    insertafter: EOF
+  notify: Restart Memcached
 
 
 - name: Check Memcached service status with systemctl status
