@@ -91,6 +91,7 @@
     owner: nexus
     group: nexus
     mode: '0755'
+    recurse: yes
   become: true
 
 
