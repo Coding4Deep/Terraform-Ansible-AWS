@@ -45,7 +45,8 @@ pipeline {
                         ssh ubuntu@54.152.12.195 "sudo systemctl stop tomcat"
                         ssh ubuntu@54.152.12.195 "sudo rm -rf /opt/tomcat/webapps/ROOT /opt/tomcat/webapps/ROOT.war"
                         ssh ubuntu@54.152.12.195 "sudo mv /home/ubuntu/springboot.war /opt/tomcat/webapps/ROOT.war"
-                        ssh ubuntu@54.152.12.195 "sudo systemctl start tomcat"                    
+                        ssh ubuntu@54.152.12.195 "sudo systemctl start tomcat"   
+                                                            
                     '''
                 }
             }
