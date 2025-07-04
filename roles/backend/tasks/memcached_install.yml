@@ -10,10 +10,24 @@
     enabled: yes
     state: started
 
-- name: Configure Memcached to listen on all interfaces (0.0.0.0)
+
+- name: Ensure only one listen directive (-l) and set it to 0.0.0.0
   ansible.builtin.lineinfile:
     path: /etc/memcached.conf
-    regexp: '^-l '
+    regexp: '^-l\s+'
     line: '-l 0.0.0.0'
     state: present
+    backup: yes
   notify: Restart Memcached
+
+
+
+- name: Check Memcached service status with systemctl status
+  ansible.builtin.shell: sudo systemctl status memcached
+  register: memcached_status_full
+  changed_when: false
+  failed_when: false
+
+- name: Debug full Memcached status output
+  ansible.builtin.debug:
+    var: memcached_status_full.stdout_lines
