@@ -37,5 +37,15 @@ pipeline {
                 sh 'mvn deploy'
             }    
         }
+        stage('Deploy to frontend-ec2') {
+            steps {
+                sshagent(['tomcat_ec2_ssh_key']) {   
+                    sh '''               
+                        scp -o StrictHostKeyChecking=no target/*.war ubuntu@54.152.12.195:/opt/tomcat/webapps/
+                        ssh -o StrictHostKeyChecking=no ubuntu@54.152.12.195 'sudo systemctl restart tomcat'
+                    '''
+                }
+            }
+        }
     }
 }
