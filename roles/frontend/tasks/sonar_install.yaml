@@ -1,0 +1,75 @@
+---
+
+- name: Create SonarQube user
+  user:
+    name: "{{ sonar_user }}"
+    group: "{{ sonar_user }}"
+    system: yes
+    shell: /bin/bash
+    create_home: no
+
+
+- name: Create SonarQube group
+  group:
+    name: "{{ sonar_user }}"
+    state: present
+
+
+- name: Download SonarQube
+  get_url:
+    url: "{{ sonar_url }}"
+    dest: "/tmp/{{ sonar_archive }}"
+    mode: '0644'
+
+
+- name: Unarchive SonarQube
+  unarchive:
+    src: "/tmp/{{ sonar_archive }}"
+    dest: /opt
+    remote_src: yes
+
+
+- name: Create symlink for SonarQube
+  file:
+    src: "{{ sonar_extract_dir }}"
+    dest: "{{ sonar_home }}"
+    state: link
+    force: yes
+
+
+- name: Change ownership of SonarQube directories
+  file:
+    path: "{{ sonar_extract_dir }}"
+    owner: "{{ sonar_user }}"
+    group: "{{ sonar_user }}"
+    state: directory
+    recurse: yes
+
+
+- name: Create SonarQube systemd service
+  copy:
+    dest: /etc/systemd/system/sonarqube.service
+    content: |
+      [Unit]
+      Description=SonarQube service
+      After=syslog.target network.target
+      [Service]
+      Type=forking
+      ExecStart={{ sonar_home }}/bin/linux-x86-64/sonar.sh start
+      ExecStop={{ sonar_home }}/bin/linux-x86-64/sonar.sh stop
+      User={{ sonar_user }}
+      Group={{ sonar_user }}
+      Restart=on-failure
+      LimitNOFILE=65536
+      LimitNPROC=4096
+      [Install]
+      WantedBy=multi-user.target
+
+
+- name: Reload systemd
+  command: systemctl daemon-reexec
+- name: Enable and start SonarQube
+  systemd:
+    name: sonarqube
+    enabled: yes
+    state: started

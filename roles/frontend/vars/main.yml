@@ -2,3 +2,14 @@
 tomcat_version: 11.0.8
 tomcat_user: tomcat
 tomcat_install_dir: /opt/tomcat
+
+
+
+sonar_version: "10.4.1.88267"
+sonar_user: "sonar"
+sonar_home: "/opt/sonarqube"
+sonar_archive: "sonarqube-{{ sonar_version }}.zip"
+sonar_url: "https://binaries.sonarsource.com/Distribution/sonarqube/{{ sonar_archive }}"
+sonar_extract_dir: "/opt/sonarqube-{{ sonar_version }}"
+sonar_data_dir: "/opt/sonarqube/data"
+sonar_logs_dir: "/opt/sonarqube/logs"

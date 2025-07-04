@@ -9,18 +9,22 @@
       - unzip
     state: present
     update_cache: yes
+
+
 - name: Create nexus user
   user:
     name: nexus
     shell: /bin/bash
     home: /opt/nexus
     system: yes
+
+
 - name: Download Nexus
   get_url:
     url: https://download.sonatype.com/nexus/3/nexus-3.81.1-01-linux-x86_64.tar.gz
     dest: /tmp/nexus.tar.gz
     mode: '0644'
-    force: true
+
 - name: Extract Nexus
   unarchive:
     src: /tmp/nexus.tar.gz
@@ -41,7 +45,6 @@
     state: absent
   when: nexus_should_remove_dir.stat.exists and not nexus_should_remove_dir.stat.islnk
   become: true
-
 
 
 - name: Create symlink for nexus
