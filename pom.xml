@@ -113,19 +113,19 @@
     </dependencies>
 
 
- <dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-dependencies</artifactId>
-      <version>2022.0.4</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
-</dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2022.0.4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
 
-         
     <build>
          <finalName>springboot</finalName>
              
@@ -142,5 +142,17 @@
             </plugin>
         </plugins>
     </build>
+
+
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <url>http://54.152.12.195:8081/repository/terraform_release/</url>
+        </repository>    
+        <snapshotRepository>
+            <id>nexus</id>
+            <url>http://54.152.12.195:8081/repository/terraform_snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement> 
 
 </project>
