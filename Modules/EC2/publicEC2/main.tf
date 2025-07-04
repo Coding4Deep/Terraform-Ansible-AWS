@@ -8,6 +8,12 @@ resource "aws_instance" "public_ec2" {
   key_name                    = var.key_name
   associate_public_ip_address = true
 
+  root_block_device {
+    volume_size = 20              
+    volume_type = "gp3"            
+    delete_on_termination = true   
+  }
+
   tags = {
     Name    = each.key
     Role    = each.key
