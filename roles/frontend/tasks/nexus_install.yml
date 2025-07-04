@@ -1,47 +1,55 @@
+---
+- name: Ensure Java is installed
+  apt:
+    name: openjdk-11-jdk
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
 - name: Create nexus user
   user:
     name: nexus
     shell: /bin/bash
     home: /opt/nexus
-    create_home: yes
-
-- name: Install required packages
-  apt:
-    name: "{{ item }}"
-    state: present
-    update_cache: yes
-  loop:
-    - openjdk-17-jdk
-    - wget
-    - tar
+    system: yes
+  become: true
 
 - name: Download Nexus
   get_url:
-    url: https://download.sonatype.com/nexus/3/nexus-3.81.1-01-linux-x86_64.tar.gz
+    url: https://download.sonatype.com/nexus/3/nexus-3.69.0-04-unix.tar.gz
     dest: /tmp/nexus.tar.gz
+    mode: '0644'
+  become: true
 
 - name: Extract Nexus
   unarchive:
     src: /tmp/nexus.tar.gz
     dest: /opt
     remote_src: yes
+  become: true
 
-- name: Rename Nexus directory
-  command: mv /opt/nexus-3* /opt/nexus
-  args:
-    creates: /opt/nexus/bin/nexus
-
-- name: Change ownership
+- name: Create symlink for nexus
   file:
-    path: /opt/nexus
+    src: /opt/nexus-3.69.0-04
+    dest: /opt/nexus
+    state: link
+  become: true
+
+- name: Change ownership of Nexus directories
+  file:
+    path: /opt/nexus-3.69.0-04
     owner: nexus
     group: nexus
+    state: directory
     recurse: yes
+  become: true
 
-- name: Set Nexus run user
+- name: Set run_as_user to nexus in nexus.rc
   lineinfile:
     path: /opt/nexus/bin/nexus.rc
     line: 'run_as_user="nexus"'
+    create: yes
+  become: true
 
 - name: Create systemd service for Nexus
   copy:
@@ -61,10 +69,15 @@
 
       [Install]
       WantedBy=multi-user.target
-  notify: Reload systemd
+  become: true
 
-- name: Enable and start Nexus
+- name: Reload systemd
+  command: systemctl daemon-reexec
+  become: true
+
+- name: Enable and start Nexus service
   systemd:
     name: nexus
     enabled: yes
     state: started
+  become: true
