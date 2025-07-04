@@ -17,7 +17,7 @@
 
 - name: Download Nexus
   get_url:
-    url: https://download.sonatype.com/nexus/3/nexus-3.81.1-01-linux-x86_64.tar.gz.md5
+    url: https://download.sonatype.com/nexus/3/nexus-3.81.1-01-linux-x86_64.tar.gz
     dest: /tmp/nexus.tar.gz
 
 - name: Extract Nexus
