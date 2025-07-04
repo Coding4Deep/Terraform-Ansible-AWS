@@ -1,9 +1,11 @@
-- name: Reload systemd
-  systemd:
-    daemon_reload: yes
+handlers:
+  - name: Reload systemd
+    command: systemctl daemon-reexec
+    become: true
 
-- name: Start Tomcat
-  systemd:
-    name: tomcat
-    state: started
-    enabled: yes
+  - name: Start Tomcat
+    systemd:
+      name: tomcat
+      state: started
+      enabled: yes
+    become: true
