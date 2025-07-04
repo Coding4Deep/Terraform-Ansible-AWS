@@ -44,9 +44,10 @@ pipeline {
                         scp -o StrictHostKeyChecking=no target/springboot.war ubuntu@54.152.12.195:/home/ubuntu/          
                         ssh ubuntu@54.152.12.195 "sudo systemctl stop tomcat"
                         ssh ubuntu@54.152.12.195 "sudo ls -l /opt/tomcat/webapps/"
-                        ssh ubuntu@54.152.12.195 "sudo rm -rf /opt/tomcat/webapps/*"
+                        ssh ubuntu@54.152.12.195 "sudo rm -rf /opt/tomcat/webapps/ROOT /opt/tomcat/webapps/ROOT.war"
                         ssh ubuntu@54.152.12.195 "sudo ls -l /opt/tomcat/webapps/"
                         ssh ubuntu@54.152.12.195 "sudo mv /home/ubuntu/springboot.war /opt/tomcat/webapps/ROOT.war"
+                        ssh ubuntu@54.152.12.195 "sudo ls -l /opt/tomcat/webapps/"
                         ssh ubuntu@54.152.12.195 "sudo systemctl start tomcat"
                        
                     '''
