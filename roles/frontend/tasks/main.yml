@@ -4,4 +4,6 @@
 - name: configuring tomcat user, host-manager and manager 
   import_tasks: tomcat_config.yml
 
+- name: installing nexus
+  import_tasks: nexus_install.yml
 
