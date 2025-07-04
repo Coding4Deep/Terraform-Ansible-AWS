@@ -1,10 +1,23 @@
-# roles/tomcat/vars/main.yml
+# Tomcat variables
 tomcat_version: 11.0.8
 tomcat_user: tomcat
 tomcat_install_dir: /opt/tomcat
 
 
 
+# Nexus variables
+nexus_version: "3.81.1-01"
+nexus_user: "nexus"
+nexus_extract_dir: "/opt"
+nexus_symlink_path: "/opt/nexus"
+nexus_extracted_path: "{{ nexus_extract_dir }}/nexus-{{ nexus_version }}"
+nexus_work_dir: "/opt/sonatype-work"
+nexus_download_url: "https://download.sonatype.com/nexus/3/nexus-{{ nexus_version }}-linux-x86_64.tar.gz"
+nexus_archive_path: "/tmp/nexus.tar.gz"
+
+
+
+# SonarQube variables
 sonar_version: "10.4.1.88267"
 sonar_user: "sonar"
 sonar_home: "/opt/sonarqube"

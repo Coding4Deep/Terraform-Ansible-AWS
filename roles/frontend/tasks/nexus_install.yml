@@ -13,7 +13,7 @@
 
 - name: Create nexus user
   user:
-    name: nexus
+    name: "{{ nexus_user }}"
     shell: /bin/bash
     home: /opt/nexus
     system: yes
@@ -21,25 +21,25 @@
 
 - name: Download Nexus
   get_url:
-    url: https://download.sonatype.com/nexus/3/nexus-3.81.1-01-linux-x86_64.tar.gz
-    dest: /tmp/nexus.tar.gz
+    url:  "{{ nexus_download_url }}"
+    dest: "{{ nexus_archive_path }}"
     mode: '0644'
 
 - name: Extract Nexus
   unarchive:
-    src: /tmp/nexus.tar.gz
-    dest: /opt
+    src:  "{{ nexus_archive_path }}"
+    dest: "{{ nexus_extract_dir }}"
     remote_src: yes
 
 
 
-- name: Check if /opt/nexus exists
+- name: Check if {{ nexus_symlink_path }} exists
   stat:
-    path: /opt/nexus
+    path: "{{ nexus_symlink_path }}"
   register: nexus_should_remove_dir
   become: true
 
-- name: Remove existing /opt/nexus directory if it is not a symlink
+- name: Remove existing "{{ nexus_symlink_path }}" directory if it is not a symlink
   file:
     path: /opt/nexus
     state: absent
@@ -49,26 +49,32 @@
 
 - name: Create symlink for nexus
   file:
-    src: /opt/nexus-3.81.1-01
-    dest: /opt/nexus
+    src:  "{{ nexus_extracted_path }}"
+    dest: "{{ nexus_symlink_path }}"
     state: link
+
+
 - name: Change ownership of Nexus directories
   file:
-    path: /opt/nexus-3.81.1-01
-    owner: nexus
-    group: nexus
+    path: "{{ nexus_extracted_path }}"
+    owner: "{{ nexus_user }}"
+    group: "{{ nexus_user }}"
     state: directory
     recurse: yes
 - name: Ensure nexus script is executable
   file:
-    path: /opt/nexus/bin/nexus
+    path: "{{ nexus_symlink_path }}/bin/nexus"
     mode: '0755'
     state: file
+
+
 - name: Set run_as_user to nexus in nexus.rc
   lineinfile:
-    path: /opt/nexus/bin/nexus.rc
-    line: 'run_as_user="nexus"'
+    path: "{{ nexus_symlink_path }}/bin/nexus.rc"
+    line: 'run_as_user="{{ nexus_user }}"'
     create: yes
+
+
 - name: Create systemd service for Nexus
   copy:
     dest: /etc/systemd/system/nexus.service
@@ -79,9 +85,9 @@
       [Service]
       Type=forking
       LimitNOFILE=65536
-      ExecStart=/bin/bash /opt/nexus/bin/nexus start
-      ExecStop=//bin/bash opt/nexus/bin/nexus stop
-      User=nexus
+      ExecStart=/bin/bash {{ nexus_symlink_path }}/bin/nexus start
+      ExecStop=/bin/bash {{ nexus_symlink_path }}/bin/nexus stop
+      User={{ nexus_user }}
       Restart=on-abort
       [Install]
       WantedBy=multi-user.target
@@ -89,10 +95,10 @@
 
 - name: Ensure nexus work directory exists and owned by nexus user
   file:
-    path: /opt/sonatype-work
+    path: "{{ nexus_work_dir }}"
     state: directory
-    owner: nexus
-    group: nexus
+    owner: "{{ nexus_user }}"
+    group: "{{ nexus_user }}"
     mode: '0755'
     recurse: yes
   become: true
