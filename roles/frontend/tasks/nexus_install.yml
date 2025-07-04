@@ -82,6 +82,18 @@
       Restart=on-abort
       [Install]
       WantedBy=multi-user.target
+
+
+- name: Ensure nexus work directory exists and owned by nexus user
+  file:
+    path: /opt/sonatype-work
+    state: directory
+    owner: nexus
+    group: nexus
+    mode: '0755'
+  become: true
+
+
 - name: Reload systemd
   command: systemctl daemon-reexec
 - name: Enable and start Nexus service
