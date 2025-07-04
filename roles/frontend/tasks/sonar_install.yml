@@ -1,5 +1,12 @@
 ---
 
+
+- name: Create SonarQube group
+  group:
+    name: "{{ sonar_user }}"
+    state: present
+
+
 - name: Create SonarQube user
   user:
     name: "{{ sonar_user }}"
@@ -7,12 +14,6 @@
     system: yes
     shell: /bin/bash
     create_home: no
-
-
-- name: Create SonarQube group
-  group:
-    name: "{{ sonar_user }}"
-    state: present
 
 
 - name: Download SonarQube
