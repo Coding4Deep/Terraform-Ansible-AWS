@@ -32,11 +32,11 @@ pipeline {
                sh 'mvn -DskipTests=true clean package'
             }
         }        
-        stage('Deploy to Nexus') {
-            steps {
-                sh 'mvn  -X clean deploy'
-            }    
-        }
+        // stage('Deploy to Nexus') {
+        //     steps {
+        //         sh 'mvn  -X clean deploy'
+        //     }    
+        // }
         stage('Deploy to frontend-ec2') {
             steps {
                 sshagent(['tomcat_ec2_ssh_key']) {   
