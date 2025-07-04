@@ -1,0 +1,32 @@
+- name: Add MongoDB GPG key
+  ansible.builtin.apt_key:
+    url: "{{ mongodb_repo.key_url }}"
+    state: present
+
+- name: Add MongoDB repository
+  ansible.builtin.apt_repository:
+    repo: "{{ mongodb_repo.repo }}"
+    state: present
+    filename: 'mongodb-org-7.0'
+
+- name: Install MongoDB packages
+  ansible.builtin.apt:
+    name: "{{ mongodb_package }}"
+    update_cache: yes
+    state: present
+
+- name: Enable and start MongoDB service
+  ansible.builtin.systemd:
+    name: "{{ mongodb_service }}"
+    enabled: yes
+    state: started
+
+- name: Check MongoDB service status with systemctl status
+  ansible.builtin.shell: sudo systemctl status mongod
+  register: mongo_status_full
+  changed_when: false
+  failed_when: false
+
+- name: Debug full MongoDB status output
+  ansible.builtin.debug:
+    var: mongo_status_full.stdout_lines
