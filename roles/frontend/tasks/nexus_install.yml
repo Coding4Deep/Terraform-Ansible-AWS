@@ -27,20 +27,21 @@
     dest: /opt
     remote_src: yes
 
+
+
+- name: Check if /opt/nexus exists
+  stat:
+    path: /opt/nexus
+  register: nexus_should_remove_dir
+  become: true
+
 - name: Remove existing /opt/nexus directory if it is not a symlink
   file:
     path: /opt/nexus
     state: absent
   when: nexus_should_remove_dir.stat.exists and not nexus_should_remove_dir.stat.islnk
   become: true
-  vars:
-    ansible_python_interpreter: /usr/bin/python3  
-  register: nexus_remove_dir
 
-- name: Check if /opt/nexus exists
-  stat:
-    path: /opt/nexus
-  register: nexus_should_remove_dir
 
 
 - name: Create symlink for nexus
