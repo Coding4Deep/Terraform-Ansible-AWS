@@ -24,10 +24,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh '''
-                        mvn clean deploy \
-                            -Dnexus.username=$NEXUS_USER \
-                            -Dnexus.password=$NEXUS_PASS 
-                            DaltDeploymentRepository=nexus::default::http://54.152.12.195:8081/repository/terraform_snapshot/
+                        mvn clean deploy
                     '''
                 }
             }    
