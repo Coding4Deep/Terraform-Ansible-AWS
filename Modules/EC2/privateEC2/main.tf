@@ -7,6 +7,12 @@ resource "aws_instance" "private_ec2" {
   vpc_security_group_ids = [var.private_sg_id]
   key_name               = var.key_name
 
+  root_block_device {
+    volume_size = var.volume_size        
+    volume_type = var.volume_type      
+    delete_on_termination = true
+  }
+  
   tags = {
     Name = each.key
     Role = each.key

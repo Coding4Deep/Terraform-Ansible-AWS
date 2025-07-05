@@ -54,3 +54,16 @@ variable "private_sg_id" {
   description = "ID of the security group for public EC2 instances"
 }
 
+
+
+variable "volume_size" {
+  description = "Size of root volume in GB"
+  type        = number
+  default     = 30
+}
+
+variable "volume_type" {
+  description = "Type of EBS volume"
+  type        = string
+  default     = "gp3" 
+}

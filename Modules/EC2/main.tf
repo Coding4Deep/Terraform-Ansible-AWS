@@ -9,6 +9,8 @@ module "public_instances" {
   public_subnet_id = var.public_subnet_id
   public_sg_id     = var.public_sg_id
   key_name         = var.key_name
+  volume_size      = var.volume_size
+  volume_type      = var.volume_type
 }
 
 module "private_instances" {
@@ -17,4 +19,6 @@ module "private_instances" {
   private_subnet_id = var.private_subnet_id
   private_sg_id     = var.private_sg_id
   key_name          = var.key_name
+  volume_size      = var.volume_size
+  volume_type      = var.volume_type
 }

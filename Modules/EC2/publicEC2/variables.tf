@@ -20,3 +20,13 @@ variable "key_name" {
   type        = string
   description = "Name of the key pair for EC2 instances"
 }
+
+variable "volume_size" {
+  description = "Size of root volume in GB"
+  type        = number
+}
+
+variable "volume_type" {
+  description = "Type of EBS volume"
+  type        = string
+}
