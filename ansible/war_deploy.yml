@@ -1,0 +1,44 @@
+- name: Deploy WAR to Tomcat EC2 (frontend)
+  hosts: frontend
+  become: yes
+
+  vars:
+    local_war_path:  ~/jenkins/workspace/springboot/target/springboot.war
+    remote_tmp_path: /home/ubuntu/springboot.war
+    tomcat_webapps: /opt/tomcat/webapps
+
+  tasks:
+    - name: Copy WAR file to remote
+      copy:
+        src: "{{ local_war_path }}"
+        dest: "{{ remote_tmp_path }}"
+        owner: ubuntu
+        mode: '0644'
+
+    - name: Stop Tomcat
+      systemd:
+        name: tomcat
+        state: stopped
+
+    - name: Clean old ROOT app
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ tomcat_webapps }}/ROOT"
+        - "{{ tomcat_webapps }}/ROOT.war"
+
+    - name: Move new WAR to ROOT.war
+      command: mv "{{ remote_tmp_path }}" "{{ tomcat_webapps }}/ROOT.war"
+
+    - name: Fix ownership
+      file:
+        path: "{{ tomcat_webapps }}/ROOT.war"
+        owner: tomcat
+        group: tomcat
+        mode: '0644'
+
+    - name: Start Tomcat
+      systemd:
+        name: tomcat
+        state: started
