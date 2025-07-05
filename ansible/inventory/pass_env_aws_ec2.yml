@@ -1,13 +1,18 @@
+# inventory/aws_ec2.yaml
 plugin: amazon.aws.aws_ec2
 regions:
   - us-east-1
+
 filters:
-  tag:Role: backend
+  tag:project: terraform
 
 keyed_groups:
   - key: tags.Role
     prefix: ""
     separator: ""
 
-hostnames:
-  - private-ip-address
+compose:
+  ansible_host: >-
+    (tags.Role == 'frontend') | ternary(public_ip_address, private_ip_address)
+    (tags.Role == 'backend')  | ternary(private_ip_address)
+  
