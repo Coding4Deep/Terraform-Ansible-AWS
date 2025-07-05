@@ -4,9 +4,15 @@
   vars:
     backend_host: "{{ groups['backend'][0] }}"
   tasks:
-    - name: Get backend private IP from inventory
+    - name: Debug backend_host and ansible_host var
+      debug:
+        msg:
+          backend_host: "{{ backend_host }}"
+          ansible_host: "{{ hostvars[backend_host].get('ansible_host', 'NOT SET') }}"
+    - name: Set backend_ip fact from ansible_host or fallback to backend_host
       set_fact:
-        backend_ip: "{{ hostvars[backend_host]['ansible_host'] }}"
+        backend_ip: "{{ hostvars[backend_host]['ansible_host'] | default(backend_host) }}"
+
 
 - name: Set environment variables on frontend EC2
   hosts: frontend
