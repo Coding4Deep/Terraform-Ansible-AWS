@@ -1,0 +1,45 @@
+- name: Get private IP of backend EC2
+  hosts: backend
+  gather_facts: yes
+  tasks:
+    - name: Register backend private IP
+      set_fact:
+        backend_ip: "{{ ansible_host }}"
+      run_once: true
+      delegate_to: localhost
+
+- name: Set environment variables on frontend EC2
+  hosts: frontend
+  become: yes
+
+  vars:
+    mongo_host: "{{ hostvars['localhost']['backend_ip'] }}"
+    rabbitmq_host: "{{ hostvars['localhost']['backend_ip'] }}"
+    memcached_servers: "{{ hostvars['localhost']['backend_ip'] }}"
+
+  tasks:
+    - name: Ensure setenv.sh exists
+      file:
+        path: /opt/tomcat/bin/setenv.sh
+        state: touch
+        owner: tomcat
+        group: tomcat
+        mode: '0755'
+
+    - name: Inject environment variables into setenv.sh
+      lineinfile:
+        path: /opt/tomcat/bin/setenv.sh
+        line: "export {{ item.key }}={{ item.value }}"
+        create: yes
+        owner: tomcat
+        group: tomcat
+        mode: '0755'
+      loop:
+        - { key: "MONGO_HOST", value: "{{ mongo_host }}" }
+        - { key: "RABBITMQ_HOST", value: "{{ rabbitmq_host }}" }
+        - { key: "MEMCACHED_SERVERS", value: "{{ memcached_servers }}" }
+
+    - name: Restart Tomcat to apply new environment variables
+      systemd:
+        name: tomcat
+        state: restarted

@@ -47,10 +47,15 @@ pipeline {
                         export AWS_ACCESS_KEY_ID=$(vault kv get -field=access_key aws-creds/myapp)
                         export AWS_SECRET_ACCESS_KEY=$(vault kv get -field=secret_key aws-creds/myapp)
                         export VAULT_ADDR=$VAULT_ADDR
-                        export VAULT_TOKEN=$VAULT_TOKEN    
+                        export VAULT_TOKEN=$VAULT_TOKEN  
+
                         cd ansible/
-                        ansible-inventory  --graph                                           
-                        ansible-playbook  war_deploy.yml 
+                        
+                        ansible-inventory -i inventory/war_deploy_aws_ec2.yml --graph                                           
+                        ansible-playbook  playbooks/war_deploy.yml 
+
+                        ansible-inventory -i inventory/pass_env_aws_ec2.yml --graph
+                        ansible-playbook  playbooks/pass_env.yml 
                     '''
                 }      
             }
