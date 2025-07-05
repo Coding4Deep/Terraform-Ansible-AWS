@@ -1,22 +1,20 @@
-- name: Get private IP of backend EC2
-  hosts: backend
+- name: Gather backend private IP on localhost
+  hosts: localhost
   gather_facts: no
+  vars:
+    backend_host: "{{ groups['backend'][0] }}"
   tasks:
-    - name: Register backend private IP
+    - name: Get backend private IP from inventory
       set_fact:
-        backend_ip: "{{ ansible_host }}"
-      run_once: true
-      delegate_to: localhost
+        backend_ip: "{{ hostvars[backend_host]['ansible_host'] }}"
 
 - name: Set environment variables on frontend EC2
   hosts: frontend
   become: yes
-
   vars:
     mongo_host: "{{ hostvars['localhost']['backend_ip'] }}"
     rabbitmq_host: "{{ hostvars['localhost']['backend_ip'] }}"
     memcached_servers: "{{ hostvars['localhost']['backend_ip'] }}"
-
   tasks:
     - name: Ensure setenv.sh exists
       file:
