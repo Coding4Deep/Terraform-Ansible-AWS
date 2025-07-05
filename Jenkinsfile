@@ -38,4 +38,11 @@ pipeline {
       }
     }
   }
+
+  post {
+    success {
+      echo 'Build successful. Triggering downstream job...'
+      build job: 'ansible'
+    }
+  }
 }
