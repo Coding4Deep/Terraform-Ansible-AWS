@@ -1,6 +1,6 @@
 - name: Get private IP of backend EC2
   hosts: backend
-  gather_facts: yes
+  gather_facts: no
   tasks:
     - name: Register backend private IP
       set_fact:
