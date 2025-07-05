@@ -42,6 +42,7 @@ pipeline {
   post {
     success {
       echo 'Build successful. Triggering downstream job...'
+      sh 'sleep 60'
       build job: 'ansible'
     }
   }
