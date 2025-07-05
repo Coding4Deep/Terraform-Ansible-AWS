@@ -11,8 +11,6 @@
   debug:
     msg: "Username: {{ tomcat_username }}, Password: {{ tomcat_password }}"
 
-
-
 - name: Copy tomcat-users.xml with credentials from Vault
   template:
     src: tomcat-users.xml.j2

@@ -1,11 +1,8 @@
 ---
-
-
 - name: Create SonarQube group
   group:
     name: "{{ sonar_user }}"
     state: present
-
 
 - name: Create SonarQube user
   user:
@@ -15,20 +12,17 @@
     shell: /bin/bash
     create_home: no
 
-
 - name: Download SonarQube
   get_url:
     url: "{{ sonar_url }}"
     dest: "/tmp/{{ sonar_archive }}"
     mode: '0644'
 
-
 - name: Unarchive SonarQube
   unarchive:
     src: "/tmp/{{ sonar_archive }}"
     dest: /opt
     remote_src: yes
-
 
 - name: Create symlink for SonarQube
   file:
@@ -37,7 +31,6 @@
     state: link
     force: yes
 
-
 - name: Change ownership of SonarQube directories
   file:
     path: "{{ sonar_extract_dir }}"
@@ -45,7 +38,6 @@
     group: "{{ sonar_user }}"
     state: directory
     recurse: yes
-
 
 - name: Create SonarQube systemd service
   copy:
@@ -65,7 +57,6 @@
       LimitNPROC=4096
       [Install]
       WantedBy=multi-user.target
-
 
 - name: Reload systemd
   command: systemctl daemon-reexec

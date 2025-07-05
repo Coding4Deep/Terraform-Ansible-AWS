@@ -91,9 +91,6 @@
   become: yes
   tags: rabbitmq
 
-
-
-
 - name: Create RabbitMQ application user
   command: rabbitmqctl add_user rabbitmq rabbitmq
   become: yes
