@@ -52,10 +52,10 @@ pipeline {
                         cd ansible/
                         
                         ansible-inventory -i inventory/war_deploy_aws_ec2.yml --graph                                           
-                        ansible-playbook  playbooks/war_deploy.yml 
+                        ansible-playbook -i inventory/war_deploy_aws_ec2.yml playbooks/war_deploy.yml 
 
                         ansible-inventory -i inventory/pass_env_aws_ec2.yml --graph
-                        ansible-playbook  playbooks/pass_env.yml 
+                        ansible-playbook -i inventory/pass_env_aws_ec2.yml playbooks/pass_env.yml 
                     '''
                 }      
             }
